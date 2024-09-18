@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/static/css/main.e6c13ad2.css",
+    "main.js": "/static/js/main.af9e67c7.js",
+    "static/js/453.5a064835.chunk.js": "/static/js/453.5a064835.chunk.js",
+    "static/media/cadastro.png": "/static/media/cadastro.9213d4dd9d45046a0e1d.png",
+    "static/media/pagina-inicial.png": "/static/media/pagina-inicial.11f607e4d4c0b6dd5324.png",
+    "static/media/login.png": "/static/media/login.abd1c039ca512949f72f.png",
+    "index.html": "/index.html",
+    "main.e6c13ad2.css.map": "/static/css/main.e6c13ad2.css.map",
+    "main.af9e67c7.js.map": "/static/js/main.af9e67c7.js.map",
+    "453.5a064835.chunk.js.map": "/static/js/453.5a064835.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.af9e67c7.js"
+  ]
+}
