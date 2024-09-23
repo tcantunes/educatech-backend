@@ -19,6 +19,27 @@ exports.getUsers = async (req, res) => {
   }
 };
 
+exports.getUserProfile = async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
+
+    return res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      city: user.city,
+      state: user.state,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Erro no servidor' });
+  }
+};
+
+
 exports.register = async (req, res) => {
   const { name, city, state, email, password, confirmPassword } = req.body;
 

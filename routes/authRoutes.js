@@ -72,6 +72,26 @@ router.get('/users', async (req, res) => {
   }
 });
 
+router.get('/user', protect, async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
+
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      city: user.city,
+      state: user.state,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro no servidor', error });
+  }
+});
+
 module.exports = router;
 
 
