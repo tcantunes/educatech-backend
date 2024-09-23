@@ -1,8 +1,7 @@
 const express = require('express');
+const { protect } = require('../middleware/authMiddleware');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -64,7 +63,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.get('/users', async (req, res) => {
+router.get('/users', protect, async (req, res) => {
   try {
     const users = await User.find({});
     res.status(200).json(users);
