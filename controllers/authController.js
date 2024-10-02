@@ -91,3 +91,25 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: 'Erro no servidor' });
   }
 };
+
+exports.updateUserProfile = async (req, res) => {
+  const { name, email, password } = req.body;
+  const userId = req.user.id;
+
+  try {
+    let updateData = { name, email };
+    
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      updateData.password = hashedPassword;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select('-password');
+    
+    res.json(updatedUser);
+  } catch (error) {
+    console.error('Erro ao atualizar perfil do usuário:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+};
