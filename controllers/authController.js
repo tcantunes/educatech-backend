@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const bcrypt = require('bcryptjs');
 
 dotenv.config();
 
@@ -38,7 +39,6 @@ exports.getUserProfile = async (req, res) => {
     return res.status(500).json({ message: 'Erro no servidor' });
   }
 };
-
 
 exports.register = async (req, res) => {
   const { name, city, state, email, password, confirmPassword } = req.body;
@@ -111,5 +111,21 @@ exports.updateUserProfile = async (req, res) => {
   } catch (error) {
     console.error('Erro ao atualizar perfil do usuário:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+};
+
+exports.googleAuthCallback = async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({ message: 'Falha na autenticação com Google' });
+    }
+
+    const token = generateToken(user._id); 
+    res.redirect(`https://educatech-v2.netlify.app?token=${token}`);
+  } catch (error) {
+    console.error('Erro na autenticação com Google:', error);
+    res.status(500).json({ message: 'Erro no servidor' });
   }
 };
