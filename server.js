@@ -10,14 +10,8 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 app.use(passport.initialize());
-
-app.use(cors())
-
-app.use(cors({
-  origin: 'https://educatech-v2.netlify.app',
-  credentials: true,
-}));
 
 mongoose
   .connect(process.env.MONGO_URI, {
