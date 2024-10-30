@@ -24,6 +24,11 @@ mongoose
 app.use('/api/auth', authRoutes);
 app.use('/api', courseRoutes);
 
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  next();
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
