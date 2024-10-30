@@ -2,8 +2,11 @@ const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
+const { OAuth2Client } = require('google-auth-library');
 
 dotenv.config();
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
