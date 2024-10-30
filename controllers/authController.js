@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
 const { OAuth2Client } = require('google-auth-library');
-const { generateToken } = require('../utils/tokenUtils');
 
 dotenv.config();
 
