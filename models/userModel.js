@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const { type } = require('os');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -9,11 +8,11 @@ const userSchema = new mongoose.Schema({
   },
   city: {
     type: String,
-    required: true,
+    required: function () { return !this.googleId; }, 
   },
   state: {
     type: String,
-    required: true,
+    required: function () { return !this.googleId; },
   },
   email: {
     type: String,
@@ -22,7 +21,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: function () { return !this.googleId; }, 
   },
   googleId: {
     type: String,
@@ -31,7 +30,7 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
+  if (!this.isModified('password') || !this.password) {
     return next();
   }
   const salt = await bcrypt.genSalt(10);

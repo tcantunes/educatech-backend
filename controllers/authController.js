@@ -117,18 +117,28 @@ exports.updateUserProfile = async (req, res) => {
   }
 };
 
+const User = require('../models/User');
+const { generateToken } = require('../utils/tokenUtils');
+
 exports.googleAuthCallback = async (req, res) => {
   try {
-    const user = req.user;
+    const { id, displayName, emails } = req.user;
 
-    console.log("Usuário autenticado:", user);
+    let user = await User.findOne({ email: emails[0].value });
 
     if (!user) {
-      return res.status(401).json({ message: 'Falha na autenticação com Google' });
+      user = new User({
+        name: displayName,
+        email: emails[0].value,
+        googleId: id,
+      });
+
+      await user.save(); 
     }
 
-    const token = generateToken(user._id); 
-    return res.json({ token }); 
+    const token = generateToken(user._id);
+
+    return res.json({ token });
   } catch (error) {
     console.error('Erro na autenticação com Google:', error);
     return res.status(500).json({ message: 'Erro no servidor' });
