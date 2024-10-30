@@ -115,23 +115,47 @@ exports.updateUserProfile = async (req, res) => {
 };
 
 exports.googleAuthCallback = async (req, res) => {
-  const { email } = req.user;
+  try {
+    const user = req.user;
+
+    console.log("Usuário autenticado:", user);
+
+    if (!user) {
+      return res.status(401).json({ message: 'Falha na autenticação com Google' });
+    }
+
+    const token = generateToken(user._id); 
+    return res.json({ token }); 
+  } catch (error) {
+    console.error('Erro na autenticação com Google:', error);
+    return res.status(500).json({ message: 'Erro no servidor' });
+  }
+};
+
+exports.googleAuth = async (req, res) => {
+  const { token } = req.body;
 
   try {
-      let user = await User.findOne({ email });
+      const ticket = await client.verifyIdToken({
+          idToken: token,
+          audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+
+      let user = await User.findOne({ email: payload.email });
 
       if (!user) {
           user = await User.create({
-              email,
-              name: req.user.name,
+              name: payload.name,
+              email: payload.email,
           });
       }
 
-      const token = generateToken(user._id);
-      
-      res.redirect(`https://educatech-v2.netlify.app?token=${token}`);
+      const jwtToken = generateToken(user._id);
+      return res.json({ token: jwtToken });
   } catch (error) {
-      console.error('Erro na autenticação com Google:', error);
-      res.status(500).json({ message: 'Erro no servidor' });
+      console.error('Erro ao verificar o token do Google:', error);
+      return res.status(400).json({ message: 'Falha na autenticação com o Google' });
   }
 };

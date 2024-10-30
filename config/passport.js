@@ -33,10 +33,14 @@ passport.use(
             googleId: id
           });
           await user.save();
+          console.log('Novo usuário criado:', user);
+        }else {
+          console.log('Usuário existente encontrado:', user);
         }
 
         done(null, user);
       } catch (error) {
+        console.error('Erro na autenticação com Google:', error);
         done(error, null);
       }
     }
