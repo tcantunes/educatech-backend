@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
 const { OAuth2Client } = require('google-auth-library');
+const { generateToken } = require('../utils/tokenUtils');
 
 dotenv.config();
 
@@ -116,9 +117,6 @@ exports.updateUserProfile = async (req, res) => {
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
-
-const User = require('../models/User');
-const { generateToken } = require('../utils/tokenUtils');
 
 exports.googleAuthCallback = async (req, res) => {
   try {
