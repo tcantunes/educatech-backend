@@ -115,17 +115,23 @@ exports.updateUserProfile = async (req, res) => {
 };
 
 exports.googleAuthCallback = async (req, res) => {
+  const { email } = req.user;
+
   try {
-    const user = req.user;
+      let user = await User.findOne({ email });
 
-    if (!user) {
-      return res.status(401).json({ message: 'Falha na autenticação com Google' });
-    }
+      if (!user) {
+          user = await User.create({
+              email,
+              name: req.user.name,
+          });
+      }
 
-    const token = generateToken(user._id); 
-    res.redirect(`https://educatech-v2.netlify.app?token=${token}`);
+      const token = generateToken(user._id);
+      
+      res.redirect(`https://educatech-v2.netlify.app?token=${token}`);
   } catch (error) {
-    console.error('Erro na autenticação com Google:', error);
-    res.status(500).json({ message: 'Erro no servidor' });
+      console.error('Erro na autenticação com Google:', error);
+      res.status(500).json({ message: 'Erro no servidor' });
   }
 };
