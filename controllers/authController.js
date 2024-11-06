@@ -8,8 +8,8 @@ dotenv.config();
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const generateToken = (id, isAdmin) => {
+  return jwt.sign({ id, isAdmin }, process.env.JWT_SECRET, {
     expiresIn: '1h',
   });
 };
@@ -62,13 +62,15 @@ exports.register = async (req, res) => {
       state,
       email,
       password,
+      isAdmin: email === 'educatech@gmail.com', 
     });
 
     return res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id),
+      isAdmin: user.isAdmin,
+      token: generateToken(user._id, user.isAdmin),
     });
   } catch (error) {
     res.status(500).json({ message: 'Erro no servidor' });
@@ -85,7 +87,8 @@ exports.login = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        token: generateToken(user._id),
+        isAdmin: user.isAdmin,
+        token: generateToken(user._id, user.isAdmin),
       });
     } else {
       return res.status(401).json({ message: 'Credenciais inválidas' });
@@ -94,6 +97,7 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: 'Erro no servidor' });
   }
 };
+
 
 exports.updateUserProfile = async (req, res) => {
   const { name, email, password } = req.body;

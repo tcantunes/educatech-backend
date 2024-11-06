@@ -26,7 +26,8 @@ const userSchema = new mongoose.Schema({
   googleId: {
     type: String,
     unique: true,
-  }
+  },
+  isAdmin: { type: Boolean, default: false },
 });
 
 userSchema.pre('save', async function (next) {
