@@ -149,6 +149,10 @@ exports.googleAuthCallback = async (req, res) => {
 exports.googleAuth = async (req, res) => {
   const { token } = req.body;
 
+  if (!token) {
+    return res.status(400).json({ message: 'Token ausente' });
+  }
+
   try {
       const ticket = await client.verifyIdToken({
           idToken: token,
@@ -156,17 +160,19 @@ exports.googleAuth = async (req, res) => {
       });
 
       const payload = ticket.getPayload();
+      const userId = payload.sub;
 
-      let user = await User.findOne({ email: payload.email });
+      let user = await User.findOne({ googleId: userId });
 
       if (!user) {
-          user = await User.create({
-              name: payload.name,
-              email: payload.email,
-          });
-      }
+        user = await User.create({
+            name: payload.name,
+            email: payload.email,
+            googleId: userId,
+        });
+    }
 
-      const jwtToken = generateToken(user._id);
+    const jwtToken = jwt.sign({ id: user._id }, '123456789', { expiresIn: '1h' });
       return res.json({ token: jwtToken });
   } catch (error) {
       console.error('Erro ao verificar o token do Google:', error);
